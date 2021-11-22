@@ -2,31 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 10f;
-    private Vector3 lastClickedPos;
-    
-    private bool moving;
-
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            lastClickedPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            moving = true;
-        }
-
-        if (moving && transform.position != lastClickedPos)
-        {
-            float step = speed * Time.deltaTime;
-            transform.position = Vector3.MoveTowards(transform.position, lastClickedPos, step);
-            
-        }
-        else
-        {
-            moving = false;
+    public NavMeshAgent agent;
+        
+    void Start() {
+        agent = GetComponent<NavMeshAgent>();
+    }
+        
+    void Update() {
+        if (Input.GetMouseButtonDown(0)) {
+            RaycastHit hit;
+                
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
+                agent.destination = hit.point;
+            }
         }
     }
 }
